@@ -1,10 +1,10 @@
 ---
 name: exante-cc-theme
-description: Exante CC Design System rules — use when building UI with @exante/cc-design-system tokens, components, or Tailwind preset.
+description: Exante CC Design System — token usage, Tailwind preset, and color rules. Use when building any UI with @exante/cc-design-system styles, --cc-* CSS tokens, or Tailwind cc-* classes. Framework-agnostic.
 user-invocable: true
 ---
 
-# CC Design System — Rules
+# Exante CC Theme — Rules
 
 ## Token Usage
 
@@ -47,24 +47,11 @@ Dark mode token values switch automatically when the `.dark` class is on the roo
 
 | What | Import from |
 |------|-------------|
-| Components (React) | `@exante/cc-design-system` |
 | Tailwind preset | `@exante/cc-design-system/tailwind-preset` |
 | Global styles (CSS) | `@exante/cc-design-system/styles` |
 
-**Correct:**
-```ts
-import { Button, Badge } from '@exante/cc-design-system';
-import ccPreset from '@exante/cc-design-system/tailwind-preset';
-```
 ```css
 @import '@exante/cc-design-system/styles';
-```
-
-**Wrong — never import from internal paths:**
-```ts
-// do not do this
-import { Button } from '@exante/cc-design-system/src/components/Button';
-import { Button } from '@exante/cc-design-system/dist/index.js';
 ```
 
 ---
@@ -92,51 +79,26 @@ export default {
 
 ---
 
-## Available Components (React)
-
-Use these instead of building custom equivalents. All imported from `@exante/cc-design-system`.
-
-| Category | Components |
-|----------|-----------|
-| Buttons | `Button` (5 variants, 3 sizes, icon slots, BG mode) |
-| Badges | `Badge` (5 variants, indicator dot, loading) |
-| Typography | `H1`–`H6` |
-| Tabs | `Tabs` (WAI-ARIA, badges, icons, skeleton) |
-| Form controls | `Input`, `Checkbox`, `Radio`, `Switcher` |
-| Feedback | `Toast`, `Alert` |
-| Status | `StatusIndicator` (20 statuses, 6 color groups) |
-| Overlays | `Tooltip` (desktop popover + mobile bottom sheet) |
-| Data tables | `TableHeaderCell`, `FilterLabel`, `FilterRow`, `ColumnPicker` |
-| Date range | `Calendar` (dual-panel, Monday-first) |
-| Navigation | `Pagination` (responsive, lines-per-page, go-to-page) |
-| Error pages | `ErrorPage` (400, 401, 403, 404, 500, 502, 503) |
-
----
-
 ## Anti-Patterns
 
-**Do NOT recreate components that already exist in the design system.**
-
 **Do NOT hardcode Exante brand colors.**
-```tsx
-// wrong
-<div className="bg-[#007f39] text-[#ffffff]">
-// correct
-<div className="bg-cc-primary-action text-cc-inverse">
-```
+```css
+/* wrong */
+background: #007f39;
+color: #d75237;
 
-**Do NOT import from internal paths.**
-```ts
-// wrong
-import { Button } from '@exante/cc-design-system/src/components/Button/Button';
-// correct
-import { Button } from '@exante/cc-design-system';
+/* correct */
+background: var(--cc-primary-action);
+color: var(--cc-radical);
 ```
 
 **Do NOT use Tailwind arbitrary values for design system colors.**
-```tsx
-// wrong — <p className="text-[#526266]">
-// correct — <p className="text-cc-text-secondary">
+```html
+<!-- wrong -->
+<p class="text-[#526266] bg-[#007f39]">
+
+<!-- correct -->
+<p class="text-cc-text-secondary bg-cc-primary-action">
 ```
 
 **Do NOT use `bg-[#007f39]` — use `bg-cc-primary-action`.**
