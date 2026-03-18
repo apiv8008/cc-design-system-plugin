@@ -1,45 +1,62 @@
 ---
 name: exante-cc-theme
-description: Use when the project uses --cc-* CSS tokens, bg-cc-* Tailwind classes, @exante/cc-design-system imports, or Exante brand colors. Covers token rules, Tailwind setup, and React components (when applicable).
+description: Use when the project uses --cc-* CSS tokens, bg-cc-* Tailwind classes, @exante/cc-design-system imports, or Exante brand colors. Covers brand identity, token rules, Tailwind setup, and React components (when applicable).
 user-invocable: true
 ---
 
 # Exante CC Design System
 
-## Token Usage
+## Brand Identity
 
-Always use `--cc-*` CSS custom properties. Never hardcode brand colors as hex values.
+Exante is a financial technology company. The visual identity is **clean, minimal, and professional** — green and grey on white. Avoid flashy, overly decorated, or trendy design choices.
 
-**In plain CSS:**
-```css
-/* correct */
-color: var(--cc-text-primary);
-background: var(--cc-surface-primary);
+### Primary brand colors (must use tokens — never hardcode)
 
-/* wrong */
-color: #242b2d;
-background: #ffffff;
-```
+| Color | Hex | Token | Usage |
+|-------|-----|-------|-------|
+| Exante Green | `#007f39` | `--cc-primary-action` | Primary actions, links, accents |
+| Dark text | `#242b2d` | `--cc-text-primary` | Body text, headings |
+| Secondary text | `#4e5d60` | `--cc-text-secondary` | Muted text, captions |
 
-**In Tailwind classes:**
-```html
-<!-- correct -->
-<p class="text-cc-text-primary bg-cc-surface-primary">...</p>
+### Additional greens (available for accents)
+- `#209f59` — lighter green
+- `#26bf6b` — lightest green
 
-<!-- wrong -->
-<p class="text-[#242b2d] bg-white">...</p>
-```
+### Grey scale
+`#242b2d` → `#4e5d60` → `#a0afb3` → `#b8c3c6` → `#dbe1e2` → `#f1f3f4`
 
-**Brand colors that must NOT be hardcoded:**
+These are the core brand palette. Green + grey + white. Keep it restrained.
 
-| Color | Hex | Correct token |
-|-------|-----|---------------|
-| Primary / green | `#007f39` | `--cc-primary-action` / `bg-cc-primary-action` |
-| Radical / red | `#d75237` | `--cc-radical` / `bg-cc-radical` |
-| Warning / yellow | `#ea9c0b` | `--cc-warning` / `bg-cc-warning` |
-| Source / blue | `#256690` | `--cc-source` / `bg-cc-source` |
+### UI semantic colors (available, not mandatory)
+The design system also provides red, yellow, and blue for UI states. These are **not brand colors** — use them only when you need explicit semantic meaning:
+- Red (`--cc-radical`) — destructive actions, errors
+- Yellow (`--cc-warning`) — warnings
+- Blue (`--cc-source`) — informational
 
-Dark mode switches automatically when `.dark` is on the root element.
+Do not overuse these. They should appear sparingly for meaning, not decoration.
+
+### Font
+The design system uses **Inter** (400, 500, 600). This is bundled in `@exante/cc-design-system/styles`.
+
+### Icons
+Use any public icon library (Lucide, Heroicons, Phosphor, etc.) as you normally would. The design system does not enforce a specific icon set.
+
+### Dark mode
+Token values switch automatically when `.dark` is on the root element. No manual handling needed.
+
+---
+
+## What to enforce vs. leave open
+
+| Enforce | Leave open (creative freedom) |
+|---------|-------------------------------|
+| Brand colors via tokens | Spacing and padding |
+| Text color hierarchy | Border radius |
+| Font family (Inter) | Layout density and composition |
+| Dark mode mechanism | Component dimensions |
+| Semantic color meaning | Surface tints and backgrounds beyond base |
+
+Do NOT lock down spacing, radius, or layout. These should feel natural to each app.
 
 ---
 
@@ -79,7 +96,6 @@ Before building any UI control, check if it already exists. See `references/comp
 | Category | Components |
 |----------|-----------|
 | Buttons | `Button` (5 variants, 3 sizes, icon slots, BG mode) |
-| Badges | `Badge` (5 variants, indicator dot, loading) |
 | Typography | `H1`–`H6` |
 | Tabs | `Tabs` (WAI-ARIA, badges, icons, skeleton) |
 | Form controls | `Input`, `Checkbox`, `Radio`, `Switcher` |
@@ -89,33 +105,34 @@ Before building any UI control, check if it already exists. See `references/comp
 | Data tables | `TableHeaderCell`, `FilterLabel`, `FilterRow`, `ColumnPicker` |
 | Date range | `Calendar` (dual-panel, Monday-first) |
 | Navigation | `Pagination` (responsive, lines-per-page, go-to-page) |
-| Error pages | `ErrorPage` (400, 401, 403, 404, 500, 502, 503) |
+| Error pages | `ErrorPage` (400–503) |
 
-All imported from `@exante/cc-design-system`.
+All imported from `@exante/cc-design-system`. Never import from internal paths.
 
 ---
 
 ## Gotchas
 
-**Hardcoded hex values.** Claude defaults to hex colors. Always map to tokens:
+**Hardcoded hex values.** Claude defaults to hex. Always use tokens for brand colors:
 - `#007f39` → `--cc-primary-action` / `bg-cc-primary-action`
-- `#d75237` → `--cc-radical` / `text-cc-radical`
-- `#ea9c0b` → `--cc-warning` / `border-cc-warning`
-- `#256690` → `--cc-source` / `text-cc-source`
+- `#242b2d` → `--cc-text-primary` / `text-cc-text-primary`
 
-**Tailwind arbitrary values for design system colors.** Never use `text-[#526266]` — use `text-cc-text-secondary`.
+**Tailwind arbitrary values for brand colors.** Never `text-[#007f39]` — use `text-cc-primary-action`.
 
-**Recreating existing components.** Do not build a custom button, modal, pagination, date picker, or form control if one exists in the table above. Use the design system component.
+**Overusing semantic colors.** Red, yellow, blue are for meaning (error, warning, info). Don't use them as decoration or to "add color" to layouts. The brand is green + grey.
 
-**Internal import paths.** Never import from `src/` or `dist/` directly:
+**Recreating existing React components.** Don't build a custom button, pagination, date picker, or form control if one exists in the component table above.
+
+**Internal import paths.** Never import from `src/` or `dist/`:
 ```ts
 // wrong
 import { Button } from '@exante/cc-design-system/src/components/Button';
-import { Button } from '@exante/cc-design-system/dist/index.js';
 // correct
 import { Button } from '@exante/cc-design-system';
 ```
 
-**Missing darkMode: 'class' in Tailwind config.** Without it, dark mode tokens won't switch.
+**Overly rigid layouts.** Don't force the same spacing, radius, or density on every app. The tokens handle colors and meaning — layout is up to the app.
 
-**className overrides that break dark mode.** Don't override token-based styles with static colors via className — the override won't adapt to dark mode.
+**className overrides that break dark mode.** Don't override token-based styles with static colors — the override won't adapt to dark mode.
+
+**Missing darkMode: 'class' in Tailwind config.** Without it, dark mode tokens won't switch.
